@@ -3,12 +3,14 @@ import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types/product";
 import Image from "next/image";
 import { useProductStore } from "@/stores/productStore";
+import ErrorMessage from "@/components/ErrorMessage";
 
 interface Props {
   products: Product[];
+  hasError: boolean;
 }
 
-const Home = ({ products }: Props) => {
+const Home = ({ products, hasError }: Props) => {
   const { pageLimit, setPageLimit, searchQuery } = useProductStore();
 
   useEffect(() => {
@@ -36,22 +38,26 @@ const Home = ({ products }: Props) => {
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-      {limitedProducts.length < products.length && (
-        <div className="flex justify-center my-4">
-          <button
-            onClick={handleShowMore}
-            className="bg-white text-black px-32 py-5 rounded-2xl border border-dark-gray bg-white flex items-center font-bold"
-          >
-            <Image
-              src="/icons/eye.svg"
-              width={20}
-              height={20}
-              alt="Ver más"
-              className="mr-2"
-            />
-            VER MÁS
-          </button>
-        </div>
+      {hasError ? (
+        <ErrorMessage />
+      ) : (
+        limitedProducts.length < products.length && (
+          <div className="flex justify-center my-4">
+            <button
+              onClick={handleShowMore}
+              className="bg-white text-black px-32 py-5 rounded-2xl border border-dark-gray bg-white flex items-center font-bold"
+            >
+              <Image
+                src="/icons/eye.svg"
+                width={20}
+                height={20}
+                alt="Ver más"
+                className="mr-2"
+              />
+              VER MÁS
+            </button>
+          </div>
+        )
       )}
     </div>
   );
@@ -70,15 +76,21 @@ export const getServerSideProps = async () => {
     }
 
     products = await response.json();
+    return {
+      props: {
+        products: products || [],
+        hasError: false,
+      },
+    };
   } catch (error) {
     console.error("Error fetching products:", (error as Error).message);
+    return {
+      props: {
+        products: [],
+        hasError: true,
+      },
+    };
   }
-
-  return {
-    props: {
-      products: products || [],
-    },
-  };
 };
 
 export default Home;
