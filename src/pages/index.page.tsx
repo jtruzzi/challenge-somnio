@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types/product";
-import { useCartStore } from "@/stores/cartStore";
 import Image from "next/image";
+import { useProductStore } from "@/stores/productStore";
 
 const Home = () => {
   const {
@@ -12,7 +12,7 @@ const Home = () => {
     pageLimit,
     setPageLimit,
     searchQuery,
-  } = useCartStore();
+  } = useProductStore();
 
   useEffect(() => {
     fetchProducts();

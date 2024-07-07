@@ -2,10 +2,10 @@ import React from "react";
 import Link from "next/link";
 import CartBadge from "./CartBadge";
 import Image from "next/image";
-import { useCartStore } from "@/stores/cartStore";
+import { useProductStore } from "@/stores/productStore";
 
 const NavBar = () => {
-  const { setSearchQuery, setPageLimit } = useCartStore();
+  const { setSearchQuery, setPageLimit } = useProductStore();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);

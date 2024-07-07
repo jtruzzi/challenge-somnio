@@ -8,11 +8,11 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const cartStore = useCartStore();
+  const { addCartItem } = useCartStore();
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleAddToCart = () => {
-    cartStore.addCartItem(product, 1);
+    addCartItem(product, 1);
     setIsAnimating(true);
     setTimeout(() => {
       setIsAnimating(false);

@@ -12,13 +12,6 @@ interface CartState {
   emptyCart: () => void;
   getCartItemsQuantity: () => number;
   getProductCartItemsQuantity: (productId: string) => number;
-  products: Product[];
-  isLoadingProducts: boolean;
-  pageLimit: number;
-  setPageLimit: (limit: number) => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  fetchProducts: () => void;
   hydrated: boolean;
   setHydrated: (value: boolean) => void;
 }
@@ -74,17 +67,6 @@ export const useCartStore = create<CartState>(
           get().cartItems.find((cartItem) => cartItem.product.id === productId)
             ?.quantity || 0
         );
-      },
-      products: [],
-      isLoadingProducts: true,
-      pageLimit: 3,
-      setPageLimit: (limit) => set({ pageLimit: limit }),
-      searchQuery: "",
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      fetchProducts: async () => {
-        const response = await fetch(`${baseApiUrl}/products`);
-        const data = await response.json();
-        set({ products: data, isLoadingProducts: false });
       },
     }),
     {

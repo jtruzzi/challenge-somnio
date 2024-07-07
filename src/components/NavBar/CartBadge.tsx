@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useCartStore } from "@/stores/cartStore";
 
 const CartBadge = () => {
-  const cartStore = useCartStore();
-  const totalQuantity = cartStore.getCartItemsQuantity();
+  const { hydrated, getCartItemsQuantity } = useCartStore();
+  const totalQuantity = getCartItemsQuantity();
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const CartBadge = () => {
     }, 200);
   }, [totalQuantity]);
 
-  if (!cartStore.hydrated) {
+  if (!hydrated) {
     return "Loading...";
   }
 

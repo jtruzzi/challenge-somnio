@@ -8,21 +8,19 @@ interface Props {
 
 const ProductCartItem = ({ cartItem }: Props) => {
   const { product } = cartItem;
-  const cartStore = useCartStore();
+  const { removeCartItem, getProductCartItemsQuantity } = useCartStore();
 
   function handleRemove() {
-    cartStore.removeCartItem(cartItem.product.id);
+    removeCartItem(cartItem.product.id);
   }
 
-  const cartQuantity = cartStore.getProductCartItemsQuantity(
-    cartItem.product.id
-  );
+  const cartQuantity = getProductCartItemsQuantity(cartItem.product.id);
 
   return (
     <>
       <div className="ext-lg text-center">{cartQuantity}</div>
       <div className="text-left">{product.title}</div>
-      <div className="text-lg font-semibold text-nowrap">
+      <div className="text-lg text-nowrap">
         USD {product.price}
       </div>
       <div>
