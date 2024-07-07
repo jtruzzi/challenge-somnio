@@ -1,9 +1,7 @@
-import create, { StateCreator } from "zustand";
+import { create, StateCreator } from "zustand";
 import { persist, PersistOptions } from "zustand/middleware";
 import { Product } from "@/types/product";
 import { CartItem } from "@/types/cart";
-
-const baseApiUrl = "https://fakestoreapi.com";
 
 interface CartState {
   cartItems: CartItem[];
@@ -14,6 +12,7 @@ interface CartState {
   getProductCartItemsQuantity: (productId: string) => number;
   hydrated: boolean;
   setHydrated: (value: boolean) => void;
+  reset: () => void;
 }
 
 type PersistConfig = (
@@ -68,6 +67,8 @@ export const useCartStore = create<CartState>(
             ?.quantity || 0
         );
       },
+      //For testing purposes only
+      reset: () => set({ cartItems: [], hydrated: false }),
     }),
     {
       name: "cart-storage",

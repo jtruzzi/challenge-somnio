@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types/product";
 import Image from "next/image";
 import { useProductStore } from "@/stores/productStore";
 
-const Home = () => {
-  const {
-    products,
-    fetchProducts,
-    isLoadingProducts,
-    pageLimit,
-    setPageLimit,
-    searchQuery,
-  } = useProductStore();
+interface Props {
+  products: Product[];
+}
+
+const Home = ({ products }: Props) => {
+  const { pageLimit, setPageLimit, searchQuery } = useProductStore();
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    setPageLimit(3);
+  }, [setPageLimit]);
 
   const handleShowMore = () => {
     setPageLimit(pageLimit + 3);
   };
 
-  const filteredProducts = !searchQuery
-    ? products
-    : products.filter((product: { title: string }) =>
-        product.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+  const filteredProducts = useMemo(() => {
+    return !searchQuery
+      ? products
+      : products.filter((product: { title: string }) =>
+          product.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+  }, [products, searchQuery]);
+
   const limitedProducts = filteredProducts.slice(0, pageLimit);
-  if (isLoadingProducts) {
-    return <div className="text-center">Loading...</div>;
-  }
 
   return (
     <div className="container mx-auto px-4">
@@ -58,6 +55,30 @@ const Home = () => {
       )}
     </div>
   );
+};
+
+export const getServerSideProps = async () => {
+  let products: Product[] = [];
+
+  try {
+    const response = await fetch(`https://fakestoreapi.com/products`);
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch products, received status ${response.status}`
+      );
+    }
+
+    products = await response.json();
+  } catch (error) {
+    console.error("Error fetching products:", (error as Error).message);
+  }
+
+  return {
+    props: {
+      products: products || [],
+    },
+  };
 };
 
 export default Home;
